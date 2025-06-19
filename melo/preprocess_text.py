@@ -84,30 +84,25 @@ def main(
 
         metadata = cleaned_path
 
-    spk_utt_map = defaultdict(list)
     spk_id_map = {}
     current_sid = 0
+
+    all_lines = []
 
     with open(metadata, encoding="utf-8") as f:
         for line in f.readlines():
             utt, spk, language, text, phones, tones, word2ph = line.strip().split("|")
-            spk_utt_map[spk].append(line)
+            all_lines.append(line)
 
-            if spk not in spk_id_map.keys():
+            if spk not in spk_id_map:
                 spk_id_map[spk] = current_sid
                 current_sid += 1
 
-    train_list = []
-    val_list = []
+    shuffle(all_lines)
 
-    for spk, utts in spk_utt_map.items():
-        shuffle(utts)
-        val_list += utts[:val_per_spk]
-        train_list += utts[val_per_spk:]
-
-    if len(val_list) > max_val_total:
-        train_list += val_list[max_val_total:]
-        val_list = val_list[:max_val_total]
+    val_size = int(len(all_lines) * 0.1)
+    val_list = all_lines[:val_size]
+    train_list = all_lines[val_size:]
 
     with open(train_path, "w", encoding="utf-8") as f:
         for line in train_list:
