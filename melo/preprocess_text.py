@@ -100,7 +100,7 @@ def main(
 
     shuffle(all_lines)
 
-    val_size = int(len(all_lines) * 0.1)
+    val_size = int(len(all_lines) * 0.02)
     val_list = all_lines[:val_size]
     train_list = all_lines[val_size:]
 
